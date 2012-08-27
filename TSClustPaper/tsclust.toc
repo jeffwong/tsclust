@@ -1,0 +1,31 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {1}Introduction}{3}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {2}Dissimilarity Metrics}{3}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {2.1}Preprocessing and Euclidean Distasnce}{3}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {2.2}Dynamic Time Warping}{5}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {3}TSClust Algorithms}{7}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {3.1}R Implementation}{7}
+\defcounter {refsection}{0}
+\contentsline {subsubsection}{\numberline {3.1.1}tsdist}{7}
+\defcounter {refsection}{0}
+\contentsline {subsubsection}{\numberline {3.1.2}tskmeans}{8}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {3.2}CUDA Implementations}{8}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {3.3}C Implementation and Memory Issues}{10}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {4}Results}{11}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {4.1}Clustering and Classification}{11}
+\defcounter {refsection}{0}
+\contentsline {subsection}{\numberline {4.2}Runtime}{14}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {5}Conclusion}{15}
+\defcounter {refsection}{0}
+\contentsline {section}{\numberline {6}Future Work}{15}

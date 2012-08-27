@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99c (TeX Live 2009/Debian)
+The top-level auxiliary file: tsclust.aux
+The style file: biblatex.bst
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Database file #1: tsclust-blx.bib
+Database file #2: references.bib.bib
+Biblatex version: 0.9
+Reallocated wiz_functions (elt_size=4) to 9000 items from 6000.
+You've used 2 entries,
+            6090 wiz_defined-function locations,
+            1138 strings with 8227 characters,
+and the built_in function-call counts, 3964 in all, are:
+= -- 166
+> -- 136
+< -- 24
++ -- 56
+- -- 48
+* -- 197
+:= -- 465
+add.period$ -- 0
+call.type$ -- 2
+change.case$ -- 10
+chr.to.int$ -- 34
+cite$ -- 2
+duplicate$ -- 315
+empty$ -- 391
+format.name$ -- 48
+if$ -- 909
+int.to.chr$ -- 0
+int.to.str$ -- 2
+missing$ -- 0
+newline$ -- 40
+num.names$ -- 41
+pop$ -- 352
+preamble$ -- 1
+purify$ -- 11
+quote$ -- 0
+skip$ -- 244
+stack$ -- 0
+substring$ -- 144
+swap$ -- 105
+text.length$ -- 39
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 76
+warning$ -- 0
+while$ -- 68
+width$ -- 0
+write$ -- 37

@@ -1,0 +1,41 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 0.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{DTW}{article}{}
+  \name{author}{1}{%
+    {{Giorgino}{G.}%
+     {Toni}{T.}%
+     {}{}%
+     {}{}}%
+  }
+  \field{journaltitle}{Journal of Statistical Software}
+  \strng{namehash}{GT1}
+  \strng{fullhash}{GT1}
+  \field{sortinit}{G}
+  \field{number}{7}
+  \field{pages}{1\bibrangedash 24}
+  \field{title}{Computing and Visualizing Dynamic Time Warping Alignments in R:
+  The dtw Package}
+  \field{volume}{31}
+  \field{year}{2009}
+\endentry
+
+\lossort
+\endlossort
+
+\endinput
