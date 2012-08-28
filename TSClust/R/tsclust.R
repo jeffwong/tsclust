@@ -1,45 +1,36 @@
 #Last updated July 13 2011.  See tsknn function
 #for problems that still need to be solved
 
-#Each column of x should represent a subject
-#The rows represent observations in time
-preprocess = function(x, demean=TRUE, standardize=TRUE) {
-  apply(x, 2, function(j, demean, standardize) {
-    if(demean) {
-      j = j - mean(j)
-    }
-    if(standardize) {
-      j = j / sd(j)
-    }
-    return (j)
-  }, demean=demean, standardize=standardize)
+#Public function to run kmeans on time series data
+tskmeans = function(x, k=2, num.iters = 10, gpu=F, verbose=F) {
+  if(!gpu)
+  {
+    return (kmeans(t(x), k))
+  }
+  else
+  {
+    dimension = nrow(x)
+    centers = sapply(1:k, function(i, dimension) {
+      rnorm(dimension,0,1)
+    }, dimension=dimension)
+
+    x.data = as.single(as.vector(x))
+    centers = as.single(as.vector(centers))
+    numTS = as.integer(ncol(x))
+    tslength = as.integer(nrow(x))
+    k = as.integer(k)
+
+    clusters = as.single(rep(0, ncol(x)))
+    withinss = as.single(rep(0, k))
+    success = integer(1)  
+ 
+    x.kmeans = .C('cudaRKMeans', x.data, centers=centers, numTS, tslength, k, 
+      clusters=clusters, withinss = withinss, success=success)
+    list(centers = x.kmeans$centers, clusters = x.kmeans$clusters,
+      withinss = x.kmeans$withinss, success = x.kmeans$success)
+  }
 }
 
-topk = function(x,k) {
-  x.order = order(x, decreasing=T)
-  x.order[1:k]
-}
-
-bottomk = function(x,k) {
-  x.order = order(x)
-  x.order[1:k]
-}
-
-.dist.euclidean = function(x,y) {
-  sqrt(sum((x-y)^2))
-}
-
-.dist.dtw = function(x,y) {
-  dtw(x,y)$normalizedDistance
-  #dtw(x,y)$distance
-}
-
-.dist.jure = function(x,y) {
-  beta.hat = cor(x,y) * (sd(y) / sd(x))
-  alpha.hat = mean(y) - (beta.hat * mean(x))
-  y.fitted = alpha.hat + beta.hat * x
-  sqrt(sum((y - y.fitted)^2))
-}
 
 #Public function to calculate the distance between
 #multiple time series
@@ -80,118 +71,12 @@ tsdist = function(x, distfn=.dist.dtw, method="R") {
   }
 }
 
-#Public function to run kmeans on time series data
-tskmeans = function(x, distfn=.dist.dtw, k=2, num.iters = 10, method="R", verbose=F) {
-  if(method=="R")
-  {
-    dimension = nrow(x)
-    centers = sapply(1:k, function(i, dimension) {
-      rnorm(dimension,0,1)
-    }, dimension=dimension)
-    centers.last = centers
-    assignments = rep(0, ncol(x))
-  
-    for(z in 1:num.iters) {
-      if(verbose)
-      {
-        print(paste("Begin iteration", z, "of", num.iters, sep=" "))
-      }
-      assignments = apply(x, 2, function(column, centers) {
-        distanceToCenters = apply(centers, 2, function(center, column) {
-          distfn(center, column)
-        }, column=column)
-        index = which.min(distanceToCenters)
-        return (index)
-      }, centers=centers) 
-      centers = sapply(1:k, function(i, x, centers.last, assignments) {
-        indices = which(assignments == i)
-        if(length(indices) > 1) {
-          cluster = x[,indices]
-          apply(cluster, 1, mean)
-        }
-        else {
-          centers.last[,i]
-        }
-      }, x, centers.last=centers.last, assignments=assignments)
-      if(sum((centers - centers.last)^2) < 1) {
-        break
-      }
-      centers.last = centers
-    }
-
-    withinss = sapply(1:k, function(i, x, centers, assignments) {
-      indices = which(assignments == i)
-      cluster = x[,indices]  #columns that belong to ith cluster
-      cluster.d = apply(cluster,2,function(column, center) {
-        distfn(column, center)
-      }, center=centers[,i])
-      sum(cluster.d^2)
-    }, x=x, centers=centers, assignments=assignments)
-    
-    return (list(centers=centers, clusters=assignments, withinss=withinss))
-  }
-  else if(method == "C")
-  {
-    dimension = nrow(x)
-    centers = sapply(1:k, function(i, dimension) {
-      rnorm(dimension,0,1)
-    }, dimension=dimension)
-
-    x.data = as.single(as.vector(x))
-    centers = as.single(as.vector(centers))
-    numTS = as.integer(ncol(x))
-    tslength = as.integer(nrow(x))
-    k = as.integer(k)
-
-    clusters = as.single(rep(0, ncol(x)))
-    withinss = as.single(rep(0, k))
-    success = integer(1)  
-
-    x.kmeans = .C('RKMeans', x.data, centers=centers, numTS, tslength, k, 
-      clusters=clusters, withinss = withinss, success=success)
-    list(centers = x.kmeans$centers, clusters = x.kmeans$clusters,
-      withinss = x.kmeans$withinss, success = x.kmeans$success)
-  }
-  else if(method == "CUDA")
-  {
-    dimension = nrow(x)
-    centers = sapply(1:k, function(i, dimension) {
-      rnorm(dimension,0,1)
-    }, dimension=dimension)
-
-    x.data = as.single(as.vector(x))
-    centers = as.single(as.vector(centers))
-    numTS = as.integer(ncol(x))
-    tslength = as.integer(nrow(x))
-    k = as.integer(k)
-
-    clusters = as.single(rep(0, ncol(x)))
-    withinss = as.single(rep(0, k))
-    success = integer(1)  
- 
-    x.kmeans = .C('cudaRKMeans', x.data, centers=centers, numTS, tslength, k, 
-      clusters=clusters, withinss = withinss, success=success)
-    list(centers = x.kmeans$centers, clusters = x.kmeans$clusters,
-      withinss = x.kmeans$withinss, success = x.kmeans$success)
-  }
-}
-
 #Public function to run hclust on time series data
 #Note that the hclust algorithm expects the data to be normalized
-tshclust = function(x, k, distmat="DTW", ...) {
+tshclust = function(x, k, distfn, ...) {
   x = preprocess(x, demean=T, standardize=F)
-  if(distmat == "DTW") {
-    x.dist = dist(x, method="DTW", by_rows=F)
-  } else if(distmat == "tsdist") {
-    x.dist = tsdist(x, ...)
-  }
+  x.dist = tsdist(x, ...)
   x.hclust = hclust(x.dist)
-  plot(x.hclust)
-
-  if(!missing(k)) {
-    x.hclust.labels = cutree(x.hclust, k=k)
-    return (list(hclust = x.hclust, clusters=x.hclust.labels))
-  }
   return (x.hclust)
 }
 
